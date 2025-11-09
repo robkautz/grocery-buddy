@@ -57,7 +57,7 @@ sudo apt-get install git
 ### 3. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/grocery-buddy.git
+git clone https://github.com/robkautz/grocery-buddy.git
 cd grocery-buddy
 ```
 
