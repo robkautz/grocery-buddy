@@ -4,11 +4,12 @@ Your personal recipe manager and grocery list generator. Upload recipes, select 
 
 ## Features
 
-- 📝 **Recipe Management**: Upload and store recipes in plain text format
+- 📝 **Recipe Management**: Add recipes by copying `.txt` files to the `public/recipes/` folder - they load automatically!
 - 🎯 **Smart Selection**: Choose dishes and adjust serving sizes
 - 🛒 **Grocery Lists**: Automatically generate organized shopping lists
 - 📱 **Responsive Design**: Works great on desktop and mobile
 - 💾 **Local Storage**: All data stored locally in your browser
+- 🔄 **Public Recipes**: Recipes in the repository are automatically available to everyone
 
 ## Quick Start
 
@@ -149,11 +150,18 @@ Instructions:
 
 Grocery Buddy automatically loads recipes from the `public/recipes/` folder. This is the easiest way to add recipes that will be part of the repository and available to everyone.
 
-#### How to Add Recipes
+#### How to Add Recipes (Mac)
 
-1. **Navigate to the recipes folder**:
+1. **Navigate to the recipes folder in Finder**:
+   - Open Finder
+   - Navigate to your Grocery Buddy project folder (e.g., `~/Projects/grocery-buddy`)
+   - Open the `public` folder
+   - Open the `recipes` folder
+   
+   **Or use Terminal**:
    ```bash
-   cd grocery-buddy/public/recipes
+   cd ~/Projects/grocery-buddy/public/recipes
+   # Or wherever your project is located
    ```
 
 2. **Create a new recipe file** (e.g., `my-recipe.txt`) following the recipe format:
@@ -219,8 +227,9 @@ Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 1. Copy the prompt from `examples/chatgpt-prompt.txt`
 2. Paste it into ChatGPT
 3. Add your recipe at the end
-4. Copy the output and save as a `.txt` file
-5. Upload it to Grocery Buddy!
+4. Copy the output and save as a `.txt` file in the `public/recipes/` folder
+5. Add the filename to `public/recipes/recipes.json`
+6. Restart the app - your recipe will appear automatically!
 
 ### Example Recipes & Templates
 
