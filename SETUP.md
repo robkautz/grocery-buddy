@@ -86,6 +86,39 @@ VITE v7.1.3  ready in 93 ms
 
 Navigate to `http://localhost:5173` in your browser.
 
+## Updating to the Latest Version
+
+If you already have Grocery Buddy installed and want to update to the latest version:
+
+1. **Navigate to your project directory:**
+   ```bash
+   cd grocery-buddy
+   ```
+
+2. **Fetch the latest changes from GitHub:**
+   ```bash
+   git fetch origin
+   ```
+
+3. **Pull the latest changes:**
+   ```bash
+   git pull origin main
+   ```
+
+4. **Update dependencies (if package.json changed):**
+   ```bash
+   npm install
+   ```
+
+5. **Restart the development server:**
+   ```bash
+   npm run dev
+   ```
+
+**Note:** If you have local changes that conflict with the updates, Git will let you know. You may need to:
+- Commit your changes first: `git add . && git commit -m "Your commit message"`
+- Or stash them: `git stash` (then `git stash pop` after pulling)
+
 ## Troubleshooting
 
 ### Common Issues

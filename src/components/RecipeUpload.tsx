@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Button, Card, Input, Badge } from './ui'
+import { useState, useRef } from 'react'
+import { Button, Card, Badge } from './ui'
 import { parseRecipeText } from '../lib/parse/recipeParser'
 import { validateParsedRecipe } from '../lib/parse/validators'
 import { useAppStore } from '../state/store'
@@ -84,6 +84,12 @@ export function RecipeUpload() {
     }
   }
 
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  function handleButtonClick() {
+    fileInputRef.current?.click()
+  }
+
   return (
     <Card padding="lg" shadow="md">
       <div className="text-left">
@@ -91,9 +97,23 @@ export function RecipeUpload() {
         <p className="text-gray-600 mb-6">Select one or more .txt files formatted with Title, Servings, Tags, Ingredients, and Instructions.</p>
 
         <div className="flex items-center gap-4 mb-4">
-          <Input type="file" accept=".txt" multiple onChange={onInputChange} variant="file" inputSize="md"/>
-          <Button variant="primary" size="md" loading={loading} onClick={() => {}} disabled>
-            Choose files above
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".txt"
+            multiple
+            onChange={onInputChange}
+            className="hidden"
+            id="recipe-file-input"
+          />
+          <Button 
+            variant="primary" 
+            size="md" 
+            loading={loading} 
+            onClick={handleButtonClick}
+            disabled={loading}
+          >
+            Choose Files
           </Button>
         </div>
 

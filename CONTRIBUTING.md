@@ -5,7 +5,7 @@ Thank you for your interest in contributing to Grocery Buddy! This document prov
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/grocery-buddy.git`
+2. Clone your fork: `git clone https://github.com/robkautz/grocery-buddy.git`
 3. Create a feature branch: `git checkout -b feature/your-feature-name`
 4. Install dependencies: `npm install`
 5. Start the development server: `npm run dev`
@@ -150,6 +150,89 @@ Brief description of changes
 3. **Feedback**: Address any feedback or requested changes
 4. **Approval**: Once approved, the PR will be merged
 
+## Pushing Updates to Main Branch
+
+If you have write access to the repository and want to push updates directly to the `main` branch:
+
+### Workflow for Direct Pushes
+
+1. **Make sure you're on the main branch:**
+   ```bash
+   git checkout main
+   ```
+
+2. **Pull the latest changes to ensure you're up to date:**
+   ```bash
+   git pull origin main
+   ```
+
+3. **Make your changes** to the codebase
+
+4. **Test your changes:**
+   ```bash
+   npm run test:run
+   npm run lint
+   ```
+
+5. **Stage your changes:**
+   ```bash
+   git add .
+   ```
+
+6. **Commit with a descriptive message:**
+   ```bash
+   git commit -m "feat: add new feature"  # or "fix: resolve bug", etc.
+   ```
+
+7. **Push to the main branch:**
+   ```bash
+   git push origin main
+   ```
+
+### Important Notes
+
+- **Always pull before pushing** to avoid conflicts
+- **Run tests and linting** before pushing
+- **Use clear commit messages** following the conventional commit format
+- **For significant changes**, consider creating a feature branch and PR instead
+- **After pushing**, changes will be automatically deployed if CI/CD is configured
+
+### Handling Merge Conflicts
+
+If you encounter conflicts when pulling:
+
+1. **Stash your changes** (if needed):
+   ```bash
+   git stash
+   ```
+
+2. **Pull the latest:**
+   ```bash
+   git pull origin main
+   ```
+
+3. **Apply your stashed changes:**
+   ```bash
+   git stash pop
+   ```
+
+4. **Resolve conflicts** in the affected files
+
+5. **Stage resolved files:**
+   ```bash
+   git add .
+   ```
+
+6. **Complete the merge:**
+   ```bash
+   git commit -m "Merge: resolve conflicts"
+   ```
+
+7. **Push your changes:**
+   ```bash
+   git push origin main
+   ```
+
 ## Development Setup
 
 ### Prerequisites
@@ -159,7 +242,7 @@ Brief description of changes
 
 ### Setup
 ```bash
-git clone https://github.com/yourusername/grocery-buddy.git
+git clone https://github.com/robkautz/grocery-buddy.git
 cd grocery-buddy
 npm install
 npm run dev
