@@ -43,14 +43,16 @@ export function splitIntoSections(input: string): SectionMap {
 
     if (isSectionHeader(line)) {
       current = toSectionName(line)
-      if (current && !sections[current]) sections[current] = []
-      
-      // Extract value from same line if present (e.g., "Title: My Recipe" or "Title:My Recipe")
-      const colonIndex = line.indexOf(':')
-      if (colonIndex >= 0) {
-        const value = line.substring(colonIndex + 1).trim()
-        if (value) {
-          sections[current!].push(value)
+      if (current) {
+        if (!sections[current]) sections[current] = []
+        
+        // Extract value from same line if present (e.g., "Title: My Recipe" or "Title:My Recipe")
+        const colonIndex = line.indexOf(':')
+        if (colonIndex >= 0) {
+          const value = line.substring(colonIndex + 1).trim()
+          if (value) {
+            sections[current].push(value)
+          }
         }
       }
       continue
