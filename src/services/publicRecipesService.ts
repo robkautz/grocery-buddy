@@ -16,11 +16,12 @@ export async function loadPublicRecipes(): Promise<Recipe[]> {
     // Fetch the recipes manifest
     const manifestResponse = await fetch('/recipes/recipes.json')
     if (!manifestResponse.ok) {
-      console.warn('Could not load recipes manifest, skipping public recipes')
+      console.warn(`Could not load recipes manifest (status: ${manifestResponse.status}), skipping public recipes`)
       return []
     }
 
     const recipeFiles: string[] = await manifestResponse.json()
+    console.log(`Loading ${recipeFiles.length} public recipes:`, recipeFiles)
     const loadedRecipes: Recipe[] = []
 
     // Load each recipe file
@@ -50,24 +51,18 @@ export async function loadPublicRecipes(): Promise<Recipe[]> {
           updatedAt: new Date().toISOString(),
         }
 
-        // Check if recipe already exists in DB
+        // Always use the file version for public recipes (they're the source of truth)
+        // Update the database with the latest version from the file
         const db = await getDB()
-        const existing = await db.get('recipes', id)
-        
-        if (!existing) {
-          // Add new public recipe to database
-          await db.put('recipes', recipe)
-          loadedRecipes.push(recipe)
-        } else {
-          // Recipe exists, but check if it needs updating
-          // For now, we'll skip updating to preserve user modifications
-          loadedRecipes.push(existing)
-        }
+        await db.put('recipes', recipe)
+        loadedRecipes.push(recipe)
+        console.log(`✓ Loaded public recipe: ${recipe.title} (${fileName})`)
       } catch (error) {
         console.error(`Error loading recipe ${fileName}:`, error)
       }
     }
 
+    console.log(`Loaded ${loadedRecipes.length} public recipes successfully`)
     return loadedRecipes
   } catch (error) {
     console.error('Error loading public recipes:', error)

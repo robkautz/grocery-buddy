@@ -22,26 +22,33 @@ export function createRecipesSlice(
     isHydrated: false,
 
     async hydrateFromDB() {
-      // Load recipes from database
-      const dbRecipes = await RecipeService.getAllRecipes()
-      
-      // Load public recipes from /public/recipes folder
+      // Load public recipes first (they're the source of truth)
       const publicRecipes = await loadPublicRecipes()
+      console.log(`Hydrating: ${publicRecipes.length} public recipes loaded`)
       
-      // Merge recipes, avoiding duplicates (public recipes may already be in DB)
+      // Load recipes from database (user-uploaded recipes)
+      const dbRecipes = await RecipeService.getAllRecipes()
+      console.log(`Hydrating: ${dbRecipes.length} recipes from database`)
+      
+      // Merge recipes, avoiding duplicates
+      // Public recipes take precedence (they overwrite DB recipes with same ID)
       const recipeMap = new Map<string, Recipe>()
       
-      // Add DB recipes first
+      // Add DB recipes first (user-uploaded)
       for (const recipe of dbRecipes) {
-        recipeMap.set(recipe.id, recipe)
+        // Skip public recipes from DB - we'll use the file versions instead
+        if (!recipe.id.startsWith('public_')) {
+          recipeMap.set(recipe.id, recipe)
+        }
       }
       
-      // Add public recipes (will overwrite if already exists, which is fine)
+      // Add public recipes (will overwrite any DB versions, which is correct)
       for (const recipe of publicRecipes) {
         recipeMap.set(recipe.id, recipe)
       }
       
       const allRecipes = Array.from(recipeMap.values())
+      console.log(`Hydrating: Total ${allRecipes.length} recipes in state`)
       set({ recipes: allRecipes, isHydrated: true })
     },
 
