@@ -21,7 +21,7 @@ Your personal recipe manager and grocery list generator. Upload recipes, select 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/grocery-buddy.git
+   git clone https://github.com/robkautz/grocery-buddy.git
    cd grocery-buddy
    ```
 
@@ -142,6 +142,207 @@ Instructions:
 - **Solution**: Use format "Servings: 4" (number only)
 - **Solution**: Place on its own line
 
+**❌ Problem**: Upload functionality not working
+- **Solution**: Use the manual recipe addition method below
+
+### Manually Adding Recipes (If Upload Doesn't Work)
+
+If the upload tool isn't working, you can add recipes manually using your browser's developer console:
+
+#### Method 1: Using Browser Console (Recommended)
+
+1. **Open Grocery Buddy** in your browser (make sure the app is fully loaded)
+2. **Open Developer Console**:
+   - Chrome/Edge: Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
+   - Firefox: Press `F12` or `Ctrl+Shift+K` (Windows) / `Cmd+Option+K` (Mac)
+   - Safari: Enable Developer menu first, then `Cmd+Option+C`
+3. **Go to the Console tab**
+4. **Load the helper script** - You have two options:
+   
+   **Option A: Copy from file** (Easier)
+   - Open the file `examples/manual-add-recipe.js` in a text editor
+   - Copy the entire contents
+   - Paste into the browser console and press Enter
+   
+   **Option B: Use the function directly** - Paste this code:
+
+```javascript
+// Helper function to add a recipe manually using the app's store
+async function addRecipeManually(recipeText) {
+  // Access the store (exposed on window for debugging)
+  const store = window.__groceryBuddyStore;
+  if (!store) {
+    console.error('Store not found. Make sure the app is loaded.');
+    return null;
+  }
+  
+  // Parse the recipe text manually (simplified parser)
+  const lines = recipeText.split('\n').map(l => l.trim()).filter(l => l);
+  let title = '';
+  let servings = undefined;
+  let tags = [];
+  let ingredients = [];
+  let instructions = [];
+  let currentSection = '';
+  
+  for (const line of lines) {
+    if (line.startsWith('Title:')) {
+      title = line.replace('Title:', '').trim();
+    } else if (line.startsWith('Servings:')) {
+      const match = line.match(/\d+/);
+      if (match) servings = parseInt(match[0]);
+    } else if (line.startsWith('Tags:')) {
+      tags = line.replace('Tags:', '').split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+    } else if (line.toLowerCase() === 'ingredients:') {
+      currentSection = 'ingredients';
+    } else if (line.toLowerCase() === 'instructions:') {
+      currentSection = 'instructions';
+    } else if (currentSection === 'ingredients' && line.startsWith('-')) {
+      const ing = line.replace('-', '').trim();
+      // Simple parsing - you can enhance this
+      const match = ing.match(/^(\d+(?:\s+\d+\/\d+)?(?:\s+\d+\/\d+)?)\s+(\w+)\s+(.+)$/);
+      if (match) {
+        ingredients.push({ item: match[3], qty: parseFloat(match[1]), unit: match[2] });
+      } else {
+        ingredients.push({ item: ing });
+      }
+    } else if (currentSection === 'instructions' && /^\d+\./.test(line)) {
+      instructions.push(line.replace(/^\d+\.\s*/, ''));
+    }
+  }
+  
+  if (!title) {
+    console.error('Recipe must have a title');
+    return null;
+  }
+  
+  // Create recipe object
+  const recipe = {
+    id: crypto.randomUUID ? crypto.randomUUID() : `r_${Math.random().toString(36).slice(2, 10)}`,
+    title,
+    servings,
+    tags: tags.length > 0 ? tags : [],
+    ingredients: ingredients.length > 0 ? ingredients : [],
+    instructions: instructions.length > 0 ? instructions : [],
+    sourceText: recipeText
+  };
+  
+  // Add using the store's addRecipe method
+  try {
+    await store.getState().addRecipe(recipe);
+    console.log('✅ Recipe added successfully! Refresh the page to see it.');
+    return recipe;
+  } catch (error) {
+    console.error('Error adding recipe:', error);
+    return null;
+  }
+}
+
+// Example usage:
+const recipeText = `Title: Classic Chili
+Servings: 6
+Tags: dinner, comfort food, spicy
+
+Ingredients:
+- 1 lb ground beef
+- 1 medium onion, diced
+- 2 cloves garlic, minced
+- 1 can (14.5 oz) diced tomatoes
+- 1 can (15 oz) kidney beans, drained
+- 2 tbsp chili powder
+- 1 tsp cumin
+- 1 tsp salt
+- 1/2 tsp black pepper
+
+Instructions:
+1. Brown the ground beef in a large pot over medium-high heat
+2. Add onion and garlic, cook until softened
+3. Add diced tomatoes, beans, and seasonings
+4. Bring to a boil, then reduce heat and simmer for 30 minutes
+5. Serve hot with your favorite toppings`;
+
+// Run: await addRecipeManually(recipeText);
+```
+
+5. **Create your recipe text** following this format:
+   ```
+   Title: Your Recipe Name
+   Servings: 4
+   Tags: dinner, easy
+   
+   Ingredients:
+   - 1 cup flour
+   - 2 eggs
+   - 1 tsp salt
+   
+   Instructions:
+   1. First step
+   2. Second step
+   3. Final step
+   ```
+
+6. **Add your recipe** by calling:
+   ```javascript
+   await addRecipeManually(`Title: Your Recipe Name
+   Servings: 4
+   Tags: dinner, easy
+   
+   Ingredients:
+   - 1 cup flour
+   - 2 eggs
+   
+   Instructions:
+   1. Mix ingredients
+   2. Cook and serve`);
+   ```
+
+7. **Refresh the page** to see your recipe in the list
+
+**Tip**: You can also define your recipe as a variable first:
+```javascript
+const myRecipe = `Title: My Recipe
+...`;
+await addRecipeManually(myRecipe);
+```
+
+#### Method 2: Direct IndexedDB Access
+
+If Method 1 doesn't work, you can add recipes directly to IndexedDB:
+
+```javascript
+// Open IndexedDB
+const request = indexedDB.open('grocery-buddy', 1);
+
+request.onsuccess = async (event) => {
+  const db = event.target.result;
+  const transaction = db.transaction(['recipes'], 'readwrite');
+  const store = transaction.objectStore('recipes');
+  
+  const recipe = {
+    id: crypto.randomUUID(),
+    title: 'My Recipe',
+    servings: 4,
+    tags: ['dinner', 'easy'],
+    ingredients: [
+      { item: 'chicken', qty: 1, unit: 'lb' },
+      { item: 'onion', qty: 1, note: 'diced' }
+    ],
+    instructions: [
+      'Cook the chicken',
+      'Add the onion',
+      'Serve hot'
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  
+  await store.put(recipe);
+  console.log('Recipe added! Refresh the page.');
+};
+```
+
+**Note**: After adding recipes manually, refresh the page to see them in the app.
+
 ### Converting Recipes with AI
 
 Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
@@ -157,6 +358,7 @@ Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 Check the `examples/` directory for files:
 - `template.txt` - Blank template with all sections
 - `chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt
+- `manual-add-recipe.js` - Helper script for manually adding recipes via console
 - `chili.txt` - Classic chili recipe
 - `pancakes.txt` - Fluffy pancake recipe  
 - `spaghetti.txt` - Spaghetti carbonara recipe
@@ -205,5 +407,5 @@ MIT License - see [LICENSE](LICENSE) file for details
 ## Support
 
 - 📖 Check the [SETUP.md](SETUP.md) for setup issues
-- 🐛 Report bugs via [GitHub Issues](https://github.com/yourusername/grocery-buddy/issues)
-- 💡 Suggest features via [GitHub Discussions](https://github.com/yourusername/grocery-buddy/discussions)
+- 🐛 Report bugs via [GitHub Issues](https://github.com/robkautz/grocery-buddy/issues)
+- 💡 Suggest features via [GitHub Discussions](https://github.com/robkautz/grocery-buddy/discussions)
