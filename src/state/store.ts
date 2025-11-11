@@ -12,9 +12,4 @@ export const useAppStore = create<AppState>()(
     ...createRecipesSlice(set as any, get as any),
     ...createSelectionSlice(set as any),
   }), { name: 'GroceryBuddyStore' })
-)
-
-// Expose store for manual recipe addition via console
-if (typeof window !== 'undefined') {
-  (window as any).__groceryBuddyStore = useAppStore
-} 
+) 

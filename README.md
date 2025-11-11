@@ -143,130 +143,22 @@ Instructions:
 - **Solution**: Place on its own line
 
 **❌ Problem**: Upload functionality not working
-- **Solution**: Use the manual recipe addition method below
+- **Solution**: Add recipes by copying `.txt` files to the `public/recipes/` folder (see below)
 
-### Manually Adding Recipes (If Upload Doesn't Work)
+### Adding Public Recipes via File System
 
-If the upload tool isn't working, you can add recipes manually using your browser's developer console:
+Grocery Buddy automatically loads recipes from the `public/recipes/` folder. This is the easiest way to add recipes that will be part of the repository and available to everyone.
 
-#### Method 1: Using Browser Console (Recommended)
+#### How to Add Recipes
 
-1. **Open Grocery Buddy** in your browser (make sure the app is fully loaded)
-2. **Open Developer Console**:
-   - Chrome/Edge: Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
-   - Firefox: Press `F12` or `Ctrl+Shift+K` (Windows) / `Cmd+Option+K` (Mac)
-   - Safari: Enable Developer menu first, then `Cmd+Option+C`
-3. **Go to the Console tab**
-4. **Load the helper script** - You have two options:
-   
-   **Option A: Copy from file** (Easier)
-   - Open the file `examples/manual-add-recipe.js` in a text editor
-   - Copy the entire contents
-   - Paste into the browser console and press Enter
-   
-   **Option B: Use the function directly** - Paste this code:
-
-```javascript
-// Helper function to add a recipe manually using the app's store
-async function addRecipeManually(recipeText) {
-  // Access the store (exposed on window for debugging)
-  const store = window.__groceryBuddyStore;
-  if (!store) {
-    console.error('Store not found. Make sure the app is loaded.');
-    return null;
-  }
-  
-  // Parse the recipe text manually (simplified parser)
-  const lines = recipeText.split('\n').map(l => l.trim()).filter(l => l);
-  let title = '';
-  let servings = undefined;
-  let tags = [];
-  let ingredients = [];
-  let instructions = [];
-  let currentSection = '';
-  
-  for (const line of lines) {
-    if (line.startsWith('Title:')) {
-      title = line.replace('Title:', '').trim();
-    } else if (line.startsWith('Servings:')) {
-      const match = line.match(/\d+/);
-      if (match) servings = parseInt(match[0]);
-    } else if (line.startsWith('Tags:')) {
-      tags = line.replace('Tags:', '').split(',').map(t => t.trim().toLowerCase()).filter(t => t);
-    } else if (line.toLowerCase() === 'ingredients:') {
-      currentSection = 'ingredients';
-    } else if (line.toLowerCase() === 'instructions:') {
-      currentSection = 'instructions';
-    } else if (currentSection === 'ingredients' && line.startsWith('-')) {
-      const ing = line.replace('-', '').trim();
-      // Simple parsing - you can enhance this
-      const match = ing.match(/^(\d+(?:\s+\d+\/\d+)?(?:\s+\d+\/\d+)?)\s+(\w+)\s+(.+)$/);
-      if (match) {
-        ingredients.push({ item: match[3], qty: parseFloat(match[1]), unit: match[2] });
-      } else {
-        ingredients.push({ item: ing });
-      }
-    } else if (currentSection === 'instructions' && /^\d+\./.test(line)) {
-      instructions.push(line.replace(/^\d+\.\s*/, ''));
-    }
-  }
-  
-  if (!title) {
-    console.error('Recipe must have a title');
-    return null;
-  }
-  
-  // Create recipe object
-  const recipe = {
-    id: crypto.randomUUID ? crypto.randomUUID() : `r_${Math.random().toString(36).slice(2, 10)}`,
-    title,
-    servings,
-    tags: tags.length > 0 ? tags : [],
-    ingredients: ingredients.length > 0 ? ingredients : [],
-    instructions: instructions.length > 0 ? instructions : [],
-    sourceText: recipeText
-  };
-  
-  // Add using the store's addRecipe method
-  try {
-    await store.getState().addRecipe(recipe);
-    console.log('✅ Recipe added successfully! Refresh the page to see it.');
-    return recipe;
-  } catch (error) {
-    console.error('Error adding recipe:', error);
-    return null;
-  }
-}
-
-// Example usage:
-const recipeText = `Title: Classic Chili
-Servings: 6
-Tags: dinner, comfort food, spicy
-
-Ingredients:
-- 1 lb ground beef
-- 1 medium onion, diced
-- 2 cloves garlic, minced
-- 1 can (14.5 oz) diced tomatoes
-- 1 can (15 oz) kidney beans, drained
-- 2 tbsp chili powder
-- 1 tsp cumin
-- 1 tsp salt
-- 1/2 tsp black pepper
-
-Instructions:
-1. Brown the ground beef in a large pot over medium-high heat
-2. Add onion and garlic, cook until softened
-3. Add diced tomatoes, beans, and seasonings
-4. Bring to a boil, then reduce heat and simmer for 30 minutes
-5. Serve hot with your favorite toppings`;
-
-// Run: await addRecipeManually(recipeText);
-```
-
-5. **Create your recipe text** following this format:
+1. **Navigate to the recipes folder**:
+   ```bash
+   cd grocery-buddy/public/recipes
    ```
-   Title: Your Recipe Name
+
+2. **Create a new recipe file** (e.g., `my-recipe.txt`) following the recipe format:
+   ```
+   Title: My Recipe Name
    Servings: 4
    Tags: dinner, easy
    
@@ -281,67 +173,44 @@ Instructions:
    3. Final step
    ```
 
-6. **Add your recipe** by calling:
-   ```javascript
-   await addRecipeManually(`Title: Your Recipe Name
-   Servings: 4
-   Tags: dinner, easy
-   
-   Ingredients:
-   - 1 cup flour
-   - 2 eggs
-   
-   Instructions:
-   1. Mix ingredients
-   2. Cook and serve`);
+3. **Add the filename to the manifest**:
+   - Open `public/recipes/recipes.json`
+   - Add your filename to the array:
+   ```json
+   [
+     "chili.txt",
+     "pancakes.txt",
+     "spaghetti.txt",
+     "my-recipe.txt"
+   ]
    ```
 
-7. **Refresh the page** to see your recipe in the list
+4. **Restart the development server** (if running):
+   ```bash
+   # Stop the server (Ctrl+C) and restart
+   npm run dev
+   ```
 
-**Tip**: You can also define your recipe as a variable first:
-```javascript
-const myRecipe = `Title: My Recipe
-...`;
-await addRecipeManually(myRecipe);
-```
+5. **Refresh your browser** - The new recipe will automatically appear!
 
-#### Method 2: Direct IndexedDB Access
+#### Recipe File Format
 
-If Method 1 doesn't work, you can add recipes directly to IndexedDB:
+Recipes must follow this format (see `examples/template.txt` for a template):
 
-```javascript
-// Open IndexedDB
-const request = indexedDB.open('grocery-buddy', 1);
+- **Title**: Required - The recipe name
+- **Servings**: Optional - Number of servings
+- **Tags**: Optional - Comma-separated tags
+- **Ingredients**: Required - List with dashes (-)
+- **Instructions**: Required - Numbered steps
 
-request.onsuccess = async (event) => {
-  const db = event.target.result;
-  const transaction = db.transaction(['recipes'], 'readwrite');
-  const store = transaction.objectStore('recipes');
-  
-  const recipe = {
-    id: crypto.randomUUID(),
-    title: 'My Recipe',
-    servings: 4,
-    tags: ['dinner', 'easy'],
-    ingredients: [
-      { item: 'chicken', qty: 1, unit: 'lb' },
-      { item: 'onion', qty: 1, note: 'diced' }
-    ],
-    instructions: [
-      'Cook the chicken',
-      'Add the onion',
-      'Serve hot'
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  };
-  
-  await store.put(recipe);
-  console.log('Recipe added! Refresh the page.');
-};
-```
+#### Example Recipe Files
 
-**Note**: After adding recipes manually, refresh the page to see them in the app.
+Check the `public/recipes/` folder for examples:
+- `chili.txt` - Classic chili recipe
+- `pancakes.txt` - Fluffy pancake recipe
+- `spaghetti.txt` - Spaghetti carbonara recipe
+
+**Note**: Recipes in the `public/recipes/` folder are automatically loaded when the app starts. They're stored in the database and will persist across sessions.
 
 ### Converting Recipes with AI
 
@@ -355,13 +224,16 @@ Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 
 ### Example Recipes & Templates
 
-Check the `examples/` directory for files:
-- `template.txt` - Blank template with all sections
-- `chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt
-- `manual-add-recipe.js` - Helper script for manually adding recipes via console
-- `chili.txt` - Classic chili recipe
-- `pancakes.txt` - Fluffy pancake recipe  
-- `spaghetti.txt` - Spaghetti carbonara recipe
+**Public Recipes** (automatically loaded):
+- Check the `public/recipes/` folder for recipes that are automatically available in the app
+- See `public/recipes/README.md` for instructions on adding new recipes
+
+**Templates & Examples**:
+- `examples/template.txt` - Blank template with all sections
+- `examples/chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt
+- `examples/chili.txt` - Example recipe format
+- `examples/pancakes.txt` - Example recipe format
+- `examples/spaghetti.txt` - Example recipe format
 
 ## Development
 

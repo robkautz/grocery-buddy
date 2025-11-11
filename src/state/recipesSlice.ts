@@ -1,5 +1,6 @@
 import type { Recipe, RecipeId } from '../types/recipe'
 import * as RecipeService from '../services/recipeService'
+import { loadPublicRecipes } from '../services/publicRecipesService'
 
 export interface RecipesSlice {
   recipes: Recipe[]
@@ -21,8 +22,27 @@ export function createRecipesSlice(
     isHydrated: false,
 
     async hydrateFromDB() {
-      const items = await RecipeService.getAllRecipes()
-      set({ recipes: items, isHydrated: true })
+      // Load recipes from database
+      const dbRecipes = await RecipeService.getAllRecipes()
+      
+      // Load public recipes from /public/recipes folder
+      const publicRecipes = await loadPublicRecipes()
+      
+      // Merge recipes, avoiding duplicates (public recipes may already be in DB)
+      const recipeMap = new Map<string, Recipe>()
+      
+      // Add DB recipes first
+      for (const recipe of dbRecipes) {
+        recipeMap.set(recipe.id, recipe)
+      }
+      
+      // Add public recipes (will overwrite if already exists, which is fine)
+      for (const recipe of publicRecipes) {
+        recipeMap.set(recipe.id, recipe)
+      }
+      
+      const allRecipes = Array.from(recipeMap.values())
+      set({ recipes: allRecipes, isHydrated: true })
     },
 
     async addRecipe(recipeInput) {
