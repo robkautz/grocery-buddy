@@ -6,14 +6,20 @@ export function normalizeLineEndings(input: string): string {
   return input.replace(/\r\n?/g, '\n')
 }
 
-export function isSectionHeader(line: string): line is `${SectionName}:` {
+export function isSectionHeader(line: string): boolean {
   const trimmed = line.trim()
+  // Check for exact match (header only) or header with value (e.g., "Title: My Recipe" or "Title:My Recipe")
   return (
     trimmed === 'Title:' ||
+    /^Title:/.test(trimmed) ||
     trimmed === 'Servings:' ||
+    /^Servings:/.test(trimmed) ||
     trimmed === 'Tags:' ||
+    /^Tags:/.test(trimmed) ||
     trimmed === 'Ingredients:' ||
-    trimmed === 'Instructions:'
+    /^Ingredients:/.test(trimmed) ||
+    trimmed === 'Instructions:' ||
+    /^Instructions:/.test(trimmed)
   )
 }
 
@@ -38,6 +44,15 @@ export function splitIntoSections(input: string): SectionMap {
     if (isSectionHeader(line)) {
       current = toSectionName(line)
       if (current && !sections[current]) sections[current] = []
+      
+      // Extract value from same line if present (e.g., "Title: My Recipe" or "Title:My Recipe")
+      const colonIndex = line.indexOf(':')
+      if (colonIndex >= 0) {
+        const value = line.substring(colonIndex + 1).trim()
+        if (value) {
+          sections[current!].push(value)
+        }
+      }
       continue
     }
 
