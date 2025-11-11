@@ -24,7 +24,12 @@ export function isSectionHeader(line: string): boolean {
 }
 
 export function toSectionName(header: string): SectionName | null {
-  const key = header.trim().replace(/:$/, '') as SectionName
+  // Extract section name from header (handles both "Title:" and "Title: Value" formats)
+  const trimmed = header.trim()
+  const colonIndex = trimmed.indexOf(':')
+  if (colonIndex < 0) return null
+  
+  const key = trimmed.substring(0, colonIndex).trim() as SectionName
   if (key === 'Title' || key === 'Servings' || key === 'Tags' || key === 'Ingredients' || key === 'Instructions') {
     return key
   }
