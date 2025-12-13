@@ -1,4 +1,5 @@
 import { RecipeUpload } from '../components/RecipeUpload'
+import { RecipePaste } from '../components/RecipePaste'
 import { ChatGPTPrompt } from '../components/ChatGPTPrompt'
 import { useAppStore } from '../state/store'
 import { Card, Button } from '../components/ui'
@@ -70,6 +71,7 @@ export function RecipesPage({ onNavigate: _onNavigate }: RecipesPageProps) {
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-6">
             <RecipeUpload />
+            <RecipePaste />
             <ChatGPTPrompt />
           </div>
           <div className="space-y-4">
