@@ -26,8 +26,13 @@ export async function getRecipe(id: RecipeId): Promise<Recipe | undefined> {
 }
 
 export async function getAllRecipes(): Promise<Recipe[]> {
-  const db = await getDB()
-  return db.getAll('recipes')
+  try {
+    const db = await getDB()
+    return await db.getAll('recipes')
+  } catch (error) {
+    console.error('Error getting all recipes:', error)
+    return []
+  }
 }
 
 export async function updateRecipe(recipe: Recipe): Promise<Recipe> {
