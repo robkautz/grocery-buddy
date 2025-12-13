@@ -4,6 +4,7 @@ import type { Tab } from './components/NavTabs'
 import { RecipesPage } from './pages/RecipesPage'
 import { SelectPage } from './pages/SelectPage'
 import { ListPage } from './pages/ListPage'
+import { SettingsPage } from './pages/SettingsPage'
 import { Loading } from './components/Loading'
 import { EmptyState } from './components/EmptyState'
 import { ErrorBanner } from './components/ErrorBanner'
@@ -13,19 +14,23 @@ import { useAppStore } from './state/store'
 const tabs: Tab[] = [
   { id: 'recipes', label: 'Recipes', icon: '📝' },
   { id: 'select', label: 'Select', icon: '✅' },
-  { id: 'list', label: 'Grocery List', icon: '🛒' }
+  { id: 'list', label: 'Grocery List', icon: '🛒' },
+  { id: 'settings', label: 'Settings', icon: '⚙️' }
 ]
 
 function App() {
   const [activeTab, setActiveTab] = useState('recipes')
-  const { isHydrated, hydrateFromDB, recipes } = useAppStore()
+  const { isHydrated, hydrateFromDB, recipes, loadSettings, isLoaded: settingsLoaded } = useAppStore()
 
-  // Hydrate recipes from DB on app startup
+  // Hydrate recipes and settings from DB on app startup
   useEffect(() => {
     if (!isHydrated && typeof window !== 'undefined') {
       void hydrateFromDB()
     }
-  }, [isHydrated, hydrateFromDB])
+    if (!settingsLoaded && typeof window !== 'undefined') {
+      void loadSettings()
+    }
+  }, [isHydrated, hydrateFromDB, settingsLoaded, loadSettings])
 
   const renderPage = () => {
     // Show loading state while hydrating
@@ -77,6 +82,8 @@ function App() {
         return <SelectPage onNavigate={setActiveTab} />
       case 'list':
         return <ListPage onNavigate={setActiveTab} />
+      case 'settings':
+        return <SettingsPage onNavigate={setActiveTab} />
       default:
         return <RecipesPage onNavigate={setActiveTab} />
     }

@@ -69,7 +69,10 @@ export function splitIntoSections(input: string): SectionMap {
     }
 
     if (!sections[current]) sections[current] = []
-    ;(sections[current] as string[]).push(line)
+    const currentSection = sections[current]
+    if (currentSection) {
+      currentSection.push(line)
+    }
   }
 
   return sections

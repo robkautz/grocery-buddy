@@ -1,5 +1,6 @@
 import type { DBSchema } from 'idb'
 import type { Recipe } from '../types/recipe'
+import type { AppSettings } from '../state/settingsSlice'
 
 export interface GroceryBuddyDB extends DBSchema {
   recipes: {
@@ -9,5 +10,9 @@ export interface GroceryBuddyDB extends DBSchema {
       by_title: string
       by_createdAt: string
     }
+  }
+  settings: {
+    key: string
+    value: AppSettings
   }
 } 
