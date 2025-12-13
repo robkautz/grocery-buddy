@@ -22,34 +22,42 @@ export function createRecipesSlice(
     isHydrated: false,
 
     async hydrateFromDB() {
-      // Load public recipes first (they're the source of truth)
-      const publicRecipes = await loadPublicRecipes()
-      console.log(`Hydrating: ${publicRecipes.length} public recipes loaded`)
-      
-      // Load recipes from database (user-uploaded recipes)
-      const dbRecipes = await RecipeService.getAllRecipes()
-      console.log(`Hydrating: ${dbRecipes.length} recipes from database`)
-      
-      // Merge recipes, avoiding duplicates
-      // Public recipes take precedence (they overwrite DB recipes with same ID)
-      const recipeMap = new Map<string, Recipe>()
-      
-      // Add DB recipes first (user-uploaded)
-      for (const recipe of dbRecipes) {
-        // Skip public recipes from DB - we'll use the file versions instead
-        if (!recipe.id.startsWith('public_')) {
+      try {
+        console.log('Starting recipe hydration...')
+        
+        // Load public recipes first (they're the source of truth)
+        const publicRecipes = await loadPublicRecipes()
+        console.log(`Hydrating: ${publicRecipes.length} public recipes loaded`)
+        
+        // Load recipes from database (user-uploaded recipes)
+        const dbRecipes = await RecipeService.getAllRecipes()
+        console.log(`Hydrating: ${dbRecipes.length} recipes from database`)
+        
+        // Merge recipes, avoiding duplicates
+        // Public recipes take precedence (they overwrite DB recipes with same ID)
+        const recipeMap = new Map<string, Recipe>()
+        
+        // Add DB recipes first (user-uploaded)
+        for (const recipe of dbRecipes) {
+          // Skip public recipes from DB - we'll use the file versions instead
+          if (!recipe.id.startsWith('public_')) {
+            recipeMap.set(recipe.id, recipe)
+          }
+        }
+        
+        // Add public recipes (will overwrite any DB versions, which is correct)
+        for (const recipe of publicRecipes) {
           recipeMap.set(recipe.id, recipe)
         }
+        
+        const allRecipes = Array.from(recipeMap.values())
+        console.log(`Hydrating: Total ${allRecipes.length} recipes in state`)
+        set({ recipes: allRecipes, isHydrated: true })
+      } catch (error) {
+        console.error('Error hydrating recipes:', error)
+        // Set hydrated to true even on error to prevent infinite loading
+        set({ recipes: [], isHydrated: true })
       }
-      
-      // Add public recipes (will overwrite any DB versions, which is correct)
-      for (const recipe of publicRecipes) {
-        recipeMap.set(recipe.id, recipe)
-      }
-      
-      const allRecipes = Array.from(recipeMap.values())
-      console.log(`Hydrating: Total ${allRecipes.length} recipes in state`)
-      set({ recipes: allRecipes, isHydrated: true })
     },
 
     async addRecipe(recipeInput) {
