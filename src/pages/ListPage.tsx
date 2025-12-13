@@ -22,6 +22,7 @@ export function ListPage({ onNavigate }: ListPageProps) {
   const owned = useAppStore((s) => s.owned)
   const setOverride = useAppStore((s) => s.setOverride)
   const toggleOwned = useAppStore((s) => s.toggleOwned)
+  const pantryStaples = useAppStore((s) => s.settings.pantryStaples)
 
   const [copied, setCopied] = useState(false)
 
@@ -33,18 +34,24 @@ export function ListPage({ onNavigate }: ListPageProps) {
   }, [selectedRecipes, multipliers])
 
   const withOverrides = useMemo(() => {
-    return aggregated.map((i) => {
-      const key = `${i.name.toLowerCase()}__${i.unit ?? 'unitless'}`
-      const ov = overrides[key]
-      return {
-        key,
-        name: ov?.name ?? i.name,
-        qty: ov?.qty ?? i.qty,
-        unit: ov?.unit ?? i.unit,
-        owned: !!owned[key],
-      }
-    })
-  }, [aggregated, overrides, owned])
+    return aggregated
+      .filter((i) => {
+        // Filter out pantry staples
+        const itemName = i.name.toLowerCase()
+        return !pantryStaples.some(staple => itemName.includes(staple) || staple.includes(itemName))
+      })
+      .map((i) => {
+        const key = `${i.name.toLowerCase()}__${i.unit ?? 'unitless'}`
+        const ov = overrides[key]
+        return {
+          key,
+          name: ov?.name ?? i.name,
+          qty: ov?.qty ?? i.qty,
+          unit: ov?.unit ?? i.unit,
+          owned: !!owned[key],
+        }
+      })
+  }, [aggregated, overrides, owned, pantryStaples])
 
   const grouped = useMemo(() => {
     const groups = new Map<Category, typeof withOverrides>()

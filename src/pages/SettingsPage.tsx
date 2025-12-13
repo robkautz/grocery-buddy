@@ -14,10 +14,13 @@ export function SettingsPage({ onNavigate: _onNavigate }: SettingsPageProps) {
   const updateSetting = useAppStore((s) => s.updateSetting)
   const resetSettings = useAppStore((s) => s.resetSettings)
   const clearAllRecipes = useAppStore((s) => s.clearAllRecipes)
+  const addPantryStaple = useAppStore((s) => s.addPantryStaple)
+  const removePantryStaple = useAppStore((s) => s.removePantryStaple)
 
   const [savedMessage, setSavedMessage] = useState<string | null>(null)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const [newPantryItem, setNewPantryItem] = useState('')
 
   useEffect(() => {
     if (!isLoaded) {
@@ -47,6 +50,18 @@ export function SettingsPage({ onNavigate: _onNavigate }: SettingsPageProps) {
   async function handleClearAll() {
     await clearAllRecipes()
     setShowClearConfirm(false)
+    showSavedMessage()
+  }
+
+  async function handleAddPantryStaple() {
+    if (!newPantryItem.trim()) return
+    await addPantryStaple(newPantryItem)
+    setNewPantryItem('')
+    showSavedMessage()
+  }
+
+  async function handleRemovePantryStaple(item: string) {
+    await removePantryStaple(item)
     showSavedMessage()
   }
 
@@ -153,6 +168,94 @@ export function SettingsPage({ onNavigate: _onNavigate }: SettingsPageProps) {
                     />
                   </button>
                 </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Pantry Staples */}
+          <Card padding="lg" shadow="md">
+            <div className="text-left">
+              <h2 className="text-xl font-semibold text-gray-900 mb-1">Pantry Staples</h2>
+              <p className="text-sm text-gray-600 mb-6">
+                Ingredients you always have on hand. These won't appear on your grocery list.
+              </p>
+
+              <div className="space-y-4">
+                {/* Add new staple */}
+                <div>
+                  <label htmlFor="newPantryItem" className="block text-sm font-medium text-gray-700 mb-2">
+                    Add Pantry Staple
+                  </label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Enter an ingredient name (e.g., "salt", "olive oil", "garlic")
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      id="newPantryItem"
+                      type="text"
+                      value={newPantryItem}
+                      onChange={(e) => setNewPantryItem(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          void handleAddPantryStaple()
+                        }
+                      }}
+                      placeholder="e.g., salt, pepper, olive oil"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                    <Button
+                      variant="primary"
+                      size="md"
+                      onClick={handleAddPantryStaple}
+                      disabled={!newPantryItem.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
+
+                {/* List of pantry staples */}
+                {settings.pantryStaples.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Pantry Staples ({settings.pantryStaples.length})
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {settings.pantryStaples.map((item) => (
+                        <div
+                          key={item}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 border border-gray-300 rounded-lg text-sm text-gray-800"
+                        >
+                          <span>{item}</span>
+                          <button
+                            onClick={() => void handleRemovePantryStaple(item)}
+                            className="text-gray-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
+                            aria-label={`Remove ${item} from pantry staples`}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {settings.pantryStaples.length === 0 && (
+                  <p className="text-sm text-gray-500 italic">No pantry staples added yet.</p>
+                )}
               </div>
             </div>
           </Card>

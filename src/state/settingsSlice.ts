@@ -6,6 +6,9 @@ export interface AppSettings {
   sortAlphabetically: boolean
   showQuantities: boolean
   
+  // Pantry Staples
+  pantryStaples: string[] // Ingredients that are always in pantry (won't appear on grocery list)
+  
   // Display Settings
   defaultServingSize: number
   
@@ -17,6 +20,21 @@ const DEFAULT_SETTINGS: AppSettings = {
   groupByCategory: true,
   sortAlphabetically: true,
   showQuantities: true,
+  pantryStaples: [
+    'salt',
+    'pepper',
+    'black pepper',
+    'olive oil',
+    'vegetable oil',
+    'cooking oil',
+    'garlic',
+    'onion',
+    'flour',
+    'sugar',
+    'baking powder',
+    'baking soda',
+    'vanilla extract',
+  ],
   defaultServingSize: 1,
   autoSave: true,
 }
@@ -30,6 +48,8 @@ export interface SettingsSlice {
   updateSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => Promise<void>
   updateSettings: (updates: Partial<AppSettings>) => Promise<void>
   resetSettings: () => Promise<void>
+  addPantryStaple: (item: string) => Promise<void>
+  removePantryStaple: (item: string) => Promise<void>
 }
 
 export function createSettingsSlice(
@@ -95,6 +115,23 @@ export function createSettingsSlice(
       } catch (error) {
         console.error('Error resetting settings:', error)
       }
+    },
+
+    async addPantryStaple(item: string) {
+      const trimmed = item.trim().toLowerCase()
+      if (!trimmed) return
+      
+      const currentStaples = get().settings.pantryStaples
+      if (currentStaples.includes(trimmed)) return // Already exists
+      
+      const newStaples = [...currentStaples, trimmed].sort()
+      await this.updateSetting('pantryStaples', newStaples)
+    },
+
+    async removePantryStaple(item: string) {
+      const currentStaples = get().settings.pantryStaples
+      const newStaples = currentStaples.filter(s => s !== item.toLowerCase())
+      await this.updateSetting('pantryStaples', newStaples)
     },
   }
 }
