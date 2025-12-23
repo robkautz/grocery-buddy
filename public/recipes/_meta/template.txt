@@ -1,0 +1,11 @@
+Title: [Recipe Name]
+Servings: [Number of servings]
+Tags: [tag1, tag2, tag3]
+Ingredients:
+- [quantity] [unit] [ingredient name]
+- [quantity] [unit] [ingredient name]
+- [quantity] [unit] [ingredient name]
+Instructions:
+1. [First step of instructions]
+2. [Second step of instructions]
+3. [Third step of instructions]
