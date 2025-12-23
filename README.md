@@ -203,7 +203,7 @@ Grocery Buddy automatically loads recipes from the `public/recipes/` folder. Thi
 
 #### Recipe File Format
 
-Recipes must follow this format (see `public/recipes/template.txt` for a template):
+Recipes must follow this format (see `public/recipes/_meta/template.txt` for a template):
 
 - **Title**: Required - The recipe name
 - **Servings**: Optional - Number of servings
@@ -228,20 +228,19 @@ Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 2. Paste it into ChatGPT
 3. Add your recipe at the end
 4. Copy the output and save as a `.txt` file in the `public/recipes/` folder
-5. Add the filename to `public/recipes/recipes.json`
-6. Restart the app - your recipe will appear automatically!
+5. Restart the app - the recipe manifest will be auto-generated and your recipe will appear automatically!
 
 ### Templates & Resources
 
 **Recipe Template:**
-- `public/recipes/template.txt` - Blank template with all sections
+- `public/recipes/_meta/template.txt` - Blank template with all sections
 
 **ChatGPT Prompt:**
 - `docs/chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt for converting recipes
 
 **Example Recipes:**
 - Check the `public/recipes/` folder for example recipes (chili.txt, pancakes.txt, spaghetti.txt)
-- See `public/recipes/README.md` for instructions on adding new recipes
+- See `public/recipes/_meta/README.md` for instructions on adding new recipes
 
 ## Development
 
