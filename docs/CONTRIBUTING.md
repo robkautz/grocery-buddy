@@ -235,12 +235,9 @@ If you encounter conflicts when pulling:
 
 ## Development Setup
 
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Git
+For detailed setup instructions, see [SETUP.md](SETUP.md).
 
-### Setup
+### Quick Start
 ```bash
 git clone https://github.com/robkautz/grocery-buddy.git
 cd grocery-buddy

@@ -203,7 +203,7 @@ Grocery Buddy automatically loads recipes from the `public/recipes/` folder. Thi
 
 #### Recipe File Format
 
-Recipes must follow this format (see `examples/template.txt` for a template):
+Recipes must follow this format (see `public/recipes/template.txt` for a template):
 
 - **Title**: Required - The recipe name
 - **Servings**: Optional - Number of servings
@@ -224,25 +224,24 @@ Check the `public/recipes/` folder for examples:
 
 Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 
-1. Copy the prompt from `examples/chatgpt-prompt.txt`
+1. Copy the prompt from `docs/chatgpt-prompt.txt`
 2. Paste it into ChatGPT
 3. Add your recipe at the end
 4. Copy the output and save as a `.txt` file in the `public/recipes/` folder
 5. Add the filename to `public/recipes/recipes.json`
 6. Restart the app - your recipe will appear automatically!
 
-### Example Recipes & Templates
+### Templates & Resources
 
-**Public Recipes** (automatically loaded):
-- Check the `public/recipes/` folder for recipes that are automatically available in the app
+**Recipe Template:**
+- `public/recipes/template.txt` - Blank template with all sections
+
+**ChatGPT Prompt:**
+- `docs/chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt for converting recipes
+
+**Example Recipes:**
+- Check the `public/recipes/` folder for example recipes (chili.txt, pancakes.txt, spaghetti.txt)
 - See `public/recipes/README.md` for instructions on adding new recipes
-
-**Templates & Examples**:
-- `examples/template.txt` - Blank template with all sections
-- `examples/chatgpt-prompt.txt` - Ready-to-use ChatGPT prompt
-- `examples/chili.txt` - Example recipe format
-- `examples/pancakes.txt` - Example recipe format
-- `examples/spaghetti.txt` - Example recipe format
 
 ## Development
 
@@ -267,13 +266,14 @@ src/
 
 ## Documentation
 
-- **[SETUP.md](SETUP.md)** - Detailed setup instructions
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment options and guides
+- **[docs/SETUP.md](docs/SETUP.md)** - Detailed setup instructions
+- **[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contribution guidelines
+- **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Deployment options and guides
+- **[docs/chatgpt-prompt.txt](docs/chatgpt-prompt.txt)** - ChatGPT prompt for recipe conversion
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 1. Fork the repository
 2. Create a feature branch
@@ -287,6 +287,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## Support
 
-- 📖 Check the [SETUP.md](SETUP.md) for setup issues
+- 📖 Check the [docs/SETUP.md](docs/SETUP.md) for setup issues
 - 🐛 Report bugs via [GitHub Issues](https://github.com/robkautz/grocery-buddy/issues)
 - 💡 Suggest features via [GitHub Discussions](https://github.com/robkautz/grocery-buddy/discussions)

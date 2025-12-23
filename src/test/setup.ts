@@ -1,15 +1,25 @@
 import '@testing-library/jest-dom'
 
-// Mock IndexedDB for tests
-const { indexedDB, IDBKeyRange, IDBRequest, IDBTransaction, IDBObjectStore, IDBIndex, IDBCursor, IDBCursorWithValue } = require('fake-indexeddb')
-global.indexedDB = indexedDB
-global.IDBKeyRange = IDBKeyRange
-global.IDBRequest = IDBRequest
-global.IDBTransaction = IDBTransaction
-global.IDBObjectStore = IDBObjectStore
-global.IDBIndex = IDBIndex
-global.IDBCursor = IDBCursor
-global.IDBCursorWithValue = IDBCursorWithValue
+// Mock localStorage for tests
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString()
+    },
+    removeItem: (key: string) => {
+      delete store[key]
+    },
+    clear: () => {
+      store = {}
+    },
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+})
 
 // Mock crypto.randomUUID for tests
 Object.defineProperty(global, 'crypto', {

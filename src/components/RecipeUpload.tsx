@@ -56,8 +56,8 @@ export function RecipeUpload() {
         const errorMessage = (err as Error).message
         newResults.push({ fileName: file.name, status: 'error', message: errorMessage })
         
-        // Add database error to global error banner
-        if (errorMessage.includes('database') || errorMessage.includes('IndexedDB')) {
+        // Add storage error to global error banner
+        if (errorMessage.includes('storage') || errorMessage.includes('localStorage')) {
           addDatabaseError(
             `Failed to save recipe from ${file.name}`,
             errorMessage

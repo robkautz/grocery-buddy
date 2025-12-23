@@ -1,4 +1,4 @@
-import { getDB } from '../db'
+const SETTINGS_STORAGE_KEY = 'grocery-buddy-settings'
 
 export interface AppSettings {
   // Grocery List Settings
@@ -39,8 +39,6 @@ const DEFAULT_SETTINGS: AppSettings = {
   autoSave: true,
 }
 
-const SETTINGS_KEY = 'app_settings'
-
 export interface SettingsSlice {
   settings: AppSettings
   isLoaded: boolean
@@ -62,14 +60,14 @@ export function createSettingsSlice(
 
     async loadSettings() {
       try {
-        const db = await getDB()
-        const stored = await db.get('settings', SETTINGS_KEY)
+        const stored = localStorage.getItem(SETTINGS_STORAGE_KEY)
         
         if (stored) {
-          set({ settings: { ...DEFAULT_SETTINGS, ...stored }, isLoaded: true })
+          const parsed = JSON.parse(stored)
+          set({ settings: { ...DEFAULT_SETTINGS, ...parsed }, isLoaded: true })
         } else {
           // Save default settings
-          await db.put('settings', DEFAULT_SETTINGS, SETTINGS_KEY)
+          localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS))
           set({ settings: DEFAULT_SETTINGS, isLoaded: true })
         }
       } catch (error) {
@@ -83,8 +81,7 @@ export function createSettingsSlice(
       set({ settings: newSettings })
       
       try {
-        const db = await getDB()
-        await db.put('settings', newSettings, SETTINGS_KEY)
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings))
       } catch (error) {
         console.error('Error saving setting:', error)
         // Revert on error
@@ -97,8 +94,7 @@ export function createSettingsSlice(
       set({ settings: newSettings })
       
       try {
-        const db = await getDB()
-        await db.put('settings', newSettings, SETTINGS_KEY)
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings))
       } catch (error) {
         console.error('Error saving settings:', error)
         // Revert on error
@@ -110,8 +106,7 @@ export function createSettingsSlice(
       set({ settings: DEFAULT_SETTINGS })
       
       try {
-        const db = await getDB()
-        await db.put('settings', DEFAULT_SETTINGS, SETTINGS_KEY)
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS))
       } catch (error) {
         console.error('Error resetting settings:', error)
       }
@@ -135,4 +130,3 @@ export function createSettingsSlice(
     },
   }
 }
-

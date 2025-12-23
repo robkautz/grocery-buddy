@@ -294,9 +294,9 @@
 - [ ] Step 33: Example recipes & format guide
   - **Task**: Provide sample `.txt` recipes and document the expected format with tips/troubleshooting.
   - **Files**:
-    - `examples/chili.txt`
-    - `examples/pancakes.txt`
-    - `README.md`: “Recipe Text Format” section with example and common errors
+    - `public/recipes/chili.txt`
+    - `public/recipes/pancakes.txt`
+    - `README.md`: "Recipe Text Format" section with example and common errors
   - **Step Dependencies**: Steps 6–8
 
 - [ ] Step 34: Metadata & favicon

@@ -1,16 +1,23 @@
-# Public Recipes
+# Recipes
 
-This folder contains recipe files that are automatically loaded by Grocery Buddy when the app starts. These recipes are part of the git repository and will be available to anyone who clones the project.
+This folder contains recipe files that are automatically loaded by Grocery Buddy when the app starts.
+
+## Folder Structure
+
+- **`recipes/`** - Public recipes committed to git (shared with anyone who clones the repo)
+- **`recipes/private/`** - Private recipes (gitignored, not committed to git)
+
+Both folders work the same way - recipes are automatically loaded on app startup. The only difference is that private recipes stay local and are not shared via git.
 
 ## Adding a New Recipe
 
-### On Mac (Using Finder)
+### Option 1: Via Filesystem (Recommended)
 
-1. **Open Finder** and navigate to this folder:
-   - Go to your Grocery Buddy project folder
-   - Open `public` → `recipes`
+1. **Open Finder** and navigate to the recipes folder:
+   - For **public recipes**: Go to your Grocery Buddy project folder → `public` → `recipes`
+   - For **private recipes**: Go to your Grocery Buddy project folder → `public` → `recipes` → `private`
    
-2. **Create a new `.txt` file** in this folder:
+2. **Create a new `.txt` file** in the appropriate folder:
    - Right-click in the folder
    - Select "New Document" → "Text Document" (or use your text editor)
    - Name it something like `my-recipe.txt`
@@ -30,7 +37,7 @@ This folder contains recipe files that are automatically loaded by Grocery Buddy
    ```
 
 3. **Add the filename to `recipes.json`**:
-   - Open `recipes.json` in this folder (using any text editor)
+   - Open `recipes.json` in the same folder (using any text editor)
    - Add your filename to the array:
    ```json
    [
@@ -46,6 +53,16 @@ This folder contains recipe files that are automatically loaded by Grocery Buddy
    - Stop the server (press `Ctrl+C` in the terminal)
    - Run `npm run dev` again
    - Refresh your browser - The recipe will automatically appear!
+
+### Option 2: Via Web App + Export
+
+1. **Add recipe via web app** (paste or upload a file)
+2. **Open the recipe** and click **"Export Recipe"** button
+3. **Copy the downloaded file** to either:
+   - `public/recipes/` for public recipes (committed to git)
+   - `public/recipes/private/` for private recipes (gitignored)
+4. **Add the filename to `recipes.json`** in the appropriate folder
+5. **Restart the dev server** and refresh your browser
 
 ### Using Terminal (Alternative)
 
@@ -84,9 +101,11 @@ See the existing `.txt` files in this folder for examples of properly formatted 
 
 ## Notes
 
-- Recipes in this folder are **public** and will be part of the git repository
-- They're automatically loaded when the app starts
-- Once loaded, they're stored in the browser's database and persist across sessions
+- **Public recipes** (`recipes/`) are committed to git and shared with anyone who clones the repo
+- **Private recipes** (`recipes/private/`) are gitignored and stay local to your machine
+- Both types of recipes are automatically loaded when the app starts
+- Once loaded, recipes are cached in the browser's localStorage for performance
 - If you update a recipe file, restart the app to see changes
 - Recipe filenames should be lowercase with hyphens (e.g., `my-favorite-recipe.txt`)
+- Recipes added via the web app are stored in localStorage until you export them to a file
 

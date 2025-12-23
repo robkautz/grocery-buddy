@@ -56,7 +56,10 @@ export function splitIntoSections(input: string): SectionMap {
         if (colonIndex >= 0) {
           const value = line.substring(colonIndex + 1).trim()
           if (value) {
-            sections[current].push(value)
+            const section = sections[current]
+            if (section) {
+              section.push(value)
+            }
           }
         }
       }

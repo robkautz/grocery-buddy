@@ -1,6 +1,6 @@
 # Grocery Buddy Setup Guide
 
-This guide will help you get Grocery Buddy running on your computer from scratch.
+This guide will help you get Grocery Buddy running on your computer from scratch, whether you're setting it up for the first time or sharing it with others.
 
 ## System Requirements
 
@@ -10,7 +10,37 @@ This guide will help you get Grocery Buddy running on your computer from scratch
 - **Git**: For cloning the repository
 - **Browser**: Modern browser (Chrome, Firefox, Safari, Edge)
 
-## Step-by-Step Setup
+## Quick Start
+
+### Option 1: GitHub Repository (Recommended)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/robkautz/grocery-buddy.git
+   cd grocery-buddy
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser:**
+   Navigate to `http://localhost:5173`
+
+### Option 2: Download and Run
+
+1. **Download the project** as a ZIP file from GitHub
+2. **Extract** to your desired location
+3. **Open terminal** in the project directory
+4. **Run the commands** from Option 1
+
+## Step-by-Step Installation
 
 ### 1. Install Node.js
 
@@ -34,8 +64,8 @@ sudo apt-get install -y nodejs
 
 **Verify installation:**
 ```bash
-node --version
-npm --version
+node --version    # Should show 18.x or higher
+npm --version     # Should show 8.x or higher
 ```
 
 ### 2. Install Git
@@ -85,6 +115,20 @@ VITE v7.1.3  ready in 93 ms
 ### 6. Open in Browser
 
 Navigate to `http://localhost:5173` in your browser.
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run code linting |
+| `npm run test` | Run unit tests |
+| `npm run test:run` | Run tests once |
+| `npm run test:coverage` | Run tests with coverage |
+| `npm run test:e2e` | Run end-to-end tests |
+| `npm run test:e2e:ui` | Run e2e tests with UI |
 
 ## Updating to the Latest Version
 
@@ -138,6 +182,7 @@ If you already have Grocery Buddy installed and want to update to the latest ver
 **"Port 5173 is already in use"**
 - Another process is using the port
 - Solution: Kill the process or use a different port
+- To use a specific port: `npm run dev -- --port 3000`
 
 **"Module not found" errors**
 - Dependencies not installed
@@ -207,7 +252,7 @@ npm run build
 
 Files will be created in `dist/` directory.
 
-## File Structure
+## Project Structure
 
 ```
 grocery-buddy/
@@ -219,15 +264,42 @@ grocery-buddy/
 │   ├── lib/               # Utility functions
 │   └── types/             # TypeScript types
 ├── public/                # Static assets
-├── examples/              # Sample recipes
+│   └── recipes/          # Recipe files (public and private)
+├── docs/                  # Documentation
 ├── e2e/                   # End-to-end tests
 ├── dist/                  # Production build (created after build)
 ├── node_modules/          # Dependencies (created after npm install)
 ├── package.json           # Project configuration
 ├── vite.config.ts         # Vite configuration
-├── tailwind.config.js     # Tailwind CSS configuration
-└── README.md              # This file
+└── README.md              # Main documentation
 ```
+
+## Sharing the Project
+
+### Method 1: GitHub Repository
+
+1. **Create a GitHub repository**
+2. **Push your code:**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin https://github.com/yourusername/grocery-buddy.git
+   git push -u origin main
+   ```
+
+3. **Share the repository URL**
+
+### Method 2: ZIP File
+
+1. **Create a ZIP file** of the project directory
+2. **Share the ZIP file** via email, cloud storage, etc.
+3. **Recipients extract and run** `npm install && npm run dev`
+
+### Method 3: Deploy Online
+
+1. **Deploy to Vercel/Netlify** (see [DEPLOYMENT.md](DEPLOYMENT.md))
+2. **Share the live URL**
 
 ## Getting Help
 
@@ -248,12 +320,14 @@ If you encounter issues:
 
 Once you have Grocery Buddy running:
 
-1. Try uploading a recipe from the `examples/` folder
+1. Check out the recipes in `public/recipes/` folder
 2. Test the selection and grocery list features
 3. Explore the codebase in `src/`
 4. Run the test suite to ensure everything works
 5. Make your first contribution!
 
-## Contributing
+## Related Documentation
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to the project.
+- **[README.md](../README.md)** - Main documentation and quick start
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment options and guides

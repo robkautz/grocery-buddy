@@ -39,13 +39,13 @@ export function createRecipesSlice(
         
         // Add DB recipes first (user-uploaded)
         for (const recipe of dbRecipes) {
-          // Skip public recipes from DB - we'll use the file versions instead
-          if (!recipe.id.startsWith('public_')) {
+          // Skip file recipes from DB - we'll use the file versions instead
+          if (!recipe.id.startsWith('public_') && !recipe.id.startsWith('private_')) {
             recipeMap.set(recipe.id, recipe)
           }
         }
         
-        // Add public recipes (will overwrite any DB versions, which is correct)
+        // Add file recipes (will overwrite any DB versions, which is correct)
         for (const recipe of publicRecipes) {
           recipeMap.set(recipe.id, recipe)
         }

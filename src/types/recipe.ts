@@ -25,7 +25,7 @@ export interface ParsedRecipe {
 }
 
 export interface Recipe extends ParsedRecipe {
-  /** Stable string id for IndexedDB key */
+  /** Stable string id for recipe storage */
   id: RecipeId
   /** Original text (optional), useful for re-parse/debug */
   sourceText?: string

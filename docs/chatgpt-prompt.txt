@@ -3,11 +3,12 @@
 Please convert the recipe below into a Grocery Buddy compatible format:
 
 Requirements:
-- Must be a plain .txt file format
+- Must be a plain .txt code block that can be copied and pasted
 - Must use the exact section headers shown below
 - Each ingredient MUST start with a dash (-)
 - Each instruction MUST be numbered (1., 2., 3., etc.)
 - Keep descriptions simple and clear
+- Do NOT include citations, references, links, source markers, footnotes, or any system-generated tokens (e.g., oaicite, contentReference). Output must be clean plain text only.
 
 Template structure:
 - Title: [Recipe Name]

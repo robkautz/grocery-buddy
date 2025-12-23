@@ -64,7 +64,7 @@ export function RecipePaste() {
       const errorMessage = (err as Error).message
       setError(errorMessage)
       
-      if (errorMessage.includes('database') || errorMessage.includes('IndexedDB')) {
+      if (errorMessage.includes('storage') || errorMessage.includes('localStorage')) {
         addDatabaseError(
           'Failed to save pasted recipe',
           errorMessage

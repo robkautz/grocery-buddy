@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { Recipe } from '../types/recipe'
 import { Button, Card, Badge } from './ui'
+import { exportRecipeToFile } from '../lib/utils/exportRecipe'
 
 interface RecipeDetailModalProps {
   recipe: Recipe
@@ -70,7 +71,22 @@ export function RecipeDetailModal({ recipe, onClose, onDelete }: RecipeDetailMod
 
         <div className="mt-6 flex items-center justify-between">
           <Button variant="danger" onClick={() => onDelete(recipe.id)}>Delete</Button>
-          <Button variant="ghost" onClick={onClose}>Close</Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                try {
+                  exportRecipeToFile(recipe)
+                } catch (error) {
+                  console.error('Failed to export recipe:', error)
+                  alert('Failed to export recipe. Make sure the recipe has source text.')
+                }
+              }}
+            >
+              Export Recipe
+            </Button>
+            <Button variant="ghost" onClick={onClose}>Close</Button>
+          </div>
         </div>
       </Card>
     </div>
