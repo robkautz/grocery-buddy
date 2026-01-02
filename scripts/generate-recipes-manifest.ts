@@ -1,5 +1,5 @@
-import { readdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { readdir, writeFile, mkdir } from 'fs/promises'
+import { join, dirname } from 'path'
 
 const RECIPES_DIR = join(process.cwd(), 'public', 'recipes')
 const PRIVATE_RECIPES_DIR = join(process.cwd(), 'public', 'recipes', 'private')
@@ -17,11 +17,15 @@ async function generateManifest(dir: string, outputFile: string) {
       .sort()
     
     const manifest = JSON.stringify(recipeFiles, null, 2) + '\n'
+    
+    // Ensure the directory exists before writing
+    await mkdir(dirname(outputFile), { recursive: true })
     await writeFile(outputFile, manifest, 'utf-8')
     console.log(`✓ Generated ${outputFile} with ${recipeFiles.length} recipes`)
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      // Directory doesn't exist, create empty manifest
+      // Directory doesn't exist, create it and empty manifest
+      await mkdir(dirname(outputFile), { recursive: true })
       await writeFile(outputFile, '[]\n', 'utf-8')
       console.log(`✓ Created empty ${outputFile}`)
     } else {
