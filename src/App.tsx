@@ -43,7 +43,7 @@ function App() {
       return (
         <EmptyState
           title="No recipes yet"
-          message="Get started by uploading your first recipe. You can paste recipe text or upload a file."
+          message="Get started by uploading your first recipe file or adding a recipe to the public/recipes/ folder."
           actionLabel="Upload Recipe"
           onAction={() => setActiveTab('recipes')}
         />

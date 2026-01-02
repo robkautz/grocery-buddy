@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { convert } from '../convert'
+import { convert } from '../../../../lib/units/convert'
 
 describe('convert', () => {
   describe('volume conversions', () => {

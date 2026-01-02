@@ -14,10 +14,16 @@ function parseFractionToken(token: string): number | null {
 function parseMixedNumber(tokens: string[], startIndex: number): { qty?: number; nextIndex: number } {
   // Supports patterns:
   // - "2" -> 2
+  // - "1.5" -> 1.5
   // - "1/2" -> 0.5
   // - "1 1/2" -> 1.5
   const first = tokens[startIndex]
   if (!first) return { nextIndex: startIndex }
+
+  // Decimal number like 1.5
+  if (/^\d+\.\d+$/.test(first)) {
+    return { qty: Number(first), nextIndex: startIndex + 1 }
+  }
 
   // Simple integer
   if (/^\d+$/.test(first)) {
@@ -41,21 +47,25 @@ function parseMixedNumber(tokens: string[], startIndex: number): { qty?: number;
 
 function isLikelyUnit(token: string): boolean {
   // Heuristic: tokens consisting of letters, dashes or periods are likely units (tbsp, tsp, cup, g, kg, fl-oz, oz.)
-  // Avoid capturing descriptors like "large", "small" by prioritizing known-ish patterns length <= 6 or common ones
+  // Only recognize known units or very short abbreviations (<= 4 chars) to avoid false positives like "eggs", "onion"
   if (!token) return false
   const cleaned = token.toLowerCase().replace(/\.$/, '')
   if (!/^[a-z][a-z.-]*$/.test(cleaned)) return false
   // Common cooking units hint (not exhaustive)
   const common = new Set([
-    'tsp','tbsp','tbl','tablespoon','teaspoon','cup','cups','ml','l','dl','g','kg','mg','oz','fl-oz','lb','lbs','pound','pounds',
-    'pinch','dash','clove','cloves','can','cans','package','packages'
+    'tsp','tbsp','tbl','tablespoon','tablespoons','teaspoon','teaspoons','cup','cups','ml','l','dl','g','kg','mg','gram','grams','oz','fl-oz','lb','lbs','pound','pounds',
+    'pinch','dash','clove','cloves','can','cans','package','packages','rib','ribs'
   ])
-  return common.has(cleaned) || cleaned.length <= 6
+  // Blacklist common food items that might be short enough to trigger the length heuristic
+  const blacklist = new Set(['egg', 'eggs', 'onion', 'onions'])
+  if (blacklist.has(cleaned)) return false
+  // Only use length heuristic for very short tokens (<= 4) to avoid false positives
+  return common.has(cleaned) || (cleaned.length <= 4 && cleaned.length >= 1)
 }
 
 export function tokenizeIngredientLine(line: string): Ingredient | null {
   const text = stripBulletPrefix(line).trim()
-  if (!text) return null
+  if (!text) return { item: '', qty: undefined, unit: undefined }
 
   const tokens = text.split(/\s+/)
   let idx = 0
@@ -77,9 +87,14 @@ export function tokenizeIngredientLine(line: string): Ingredient | null {
     idx += 1
   }
 
+  // Skip separator words like "of" that appear between unit and item
+  if (tokens[idx]?.toLowerCase() === 'of') {
+    idx += 1
+  }
+
   // 3) The rest is the item (and possible note); keep as item for now
   const itemRest = tokens.slice(idx).join(' ').trim()
-  const item = itemRest || text
+  const item = itemRest || ''
 
   return {
     item,

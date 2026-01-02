@@ -25,6 +25,7 @@ export const unitAliases: Record<string, CanonicalUnit> = {
   can: 'count', cans: 'count',
   package: 'count', packages: 'count',
   piece: 'count', pieces: 'count',
+  rib: 'count', ribs: 'count',
   count: 'count',
 }
 

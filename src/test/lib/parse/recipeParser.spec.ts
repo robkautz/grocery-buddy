@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseRecipeText } from '../recipeParser'
+import { parseRecipeText } from '../../../../lib/parse/recipeParser'
 
 describe('parseRecipeText', () => {
   it('parses a complete recipe with all sections', () => {

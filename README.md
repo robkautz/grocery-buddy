@@ -4,12 +4,10 @@ Your personal recipe manager and grocery list generator. Upload recipes, select 
 
 ## Features
 
-- 📝 **Recipe Management**: Add recipes by copying `.txt` files to the `public/recipes/` folder - they load automatically!
+- 📝 **Simple Recipe Management**: Add recipes by copying `.txt` files to the `public/recipes/` folder - they load automatically!
 - 🎯 **Smart Selection**: Choose dishes and adjust serving sizes
 - 🛒 **Grocery Lists**: Automatically generate organized shopping lists
 - 📱 **Responsive Design**: Works great on desktop and mobile
-- 💾 **Local Storage**: All data stored locally in your browser
-- 🔄 **Public Recipes**: Recipes in the repository are automatically available to everyone
 
 ## Quick Start
 
@@ -143,25 +141,24 @@ Instructions:
 - **Solution**: Use format "Servings: 4" (number only)
 - **Solution**: Place on its own line
 
-**❌ Problem**: Upload functionality not working
-- **Solution**: Add recipes by copying `.txt` files to the `public/recipes/` folder (see below)
+**❌ Problem**: Recipe not appearing after adding file
+- **Solution**: Make sure the file ends with `.txt` and is in the `public/recipes/` folder
+- **Solution**: Restart the dev server (`npm run dev`) to regenerate the manifest
+- **Solution**: Refresh your browser
 
-### Adding Public Recipes via File System
+### Adding Recipes
 
-Grocery Buddy automatically loads recipes from the `public/recipes/` folder. This is the easiest way to add recipes that will be part of the repository and available to everyone.
+Grocery Buddy automatically loads recipes from the `public/recipes/` folder. Just add a `.txt` file and it will appear automatically!
 
-#### How to Add Recipes (Mac)
+#### How to Add Recipes
 
-1. **Navigate to the recipes folder in Finder**:
-   - Open Finder
-   - Navigate to your Grocery Buddy project folder (e.g., `~/Projects/grocery-buddy`)
-   - Open the `public` folder
-   - Open the `recipes` folder
+1. **Navigate to the recipes folder**:
+   - Open your Grocery Buddy project folder
+   - Go to `public/recipes/`
    
    **Or use Terminal**:
    ```bash
    cd ~/Projects/grocery-buddy/public/recipes
-   # Or wherever your project is located
    ```
 
 2. **Create a new recipe file** (e.g., `my-recipe.txt`) following the recipe format:
@@ -181,25 +178,7 @@ Grocery Buddy automatically loads recipes from the `public/recipes/` folder. Thi
    3. Final step
    ```
 
-3. **Add the filename to the manifest**:
-   - Open `public/recipes/recipes.json`
-   - Add your filename to the array:
-   ```json
-   [
-     "chili.txt",
-     "pancakes.txt",
-     "spaghetti.txt",
-     "my-recipe.txt"
-   ]
-   ```
-
-4. **Restart the development server** (if running):
-   ```bash
-   # Stop the server (Ctrl+C) and restart
-   npm run dev
-   ```
-
-5. **Refresh your browser** - The new recipe will automatically appear!
+3. **That's it!** The recipe manifest is automatically generated when you run `npm run dev` or `npm run build`. Just refresh your browser and the new recipe will appear!
 
 #### Recipe File Format
 
@@ -218,7 +197,7 @@ Check the `public/recipes/` folder for examples:
 - `pancakes.txt` - Fluffy pancake recipe
 - `spaghetti.txt` - Spaghetti carbonara recipe
 
-**Note**: Recipes in the `public/recipes/` folder are automatically loaded when the app starts. They're stored in the database and will persist across sessions.
+**Note**: Recipes in the `public/recipes/` folder are automatically loaded when the app starts. The recipe manifest (`recipes.json`) is automatically generated - you don't need to edit it manually!
 
 ### Converting Recipes with AI
 
@@ -228,7 +207,7 @@ Want to quickly convert recipes from websites or cookbooks? Use ChatGPT!
 2. Paste it into ChatGPT
 3. Add your recipe at the end
 4. Copy the output and save as a `.txt` file in the `public/recipes/` folder
-5. Restart the app - the recipe manifest will be auto-generated and your recipe will appear automatically!
+5. Restart the dev server (`npm run dev`) - the recipe will appear automatically!
 
 ### Templates & Resources
 

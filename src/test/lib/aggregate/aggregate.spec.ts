@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { scaleAndAggregate } from '../scaleAndAggregate'
-import { roundToStorePacks } from '../roundToStorePacks'
-import type { Recipe, Ingredient } from '../../../types/recipe'
+import { scaleAndAggregate } from '../../../../lib/aggregate/scaleAndAggregate'
+import { roundToStorePacks } from '../../../../lib/aggregate/roundToStorePacks'
+import type { Recipe, Ingredient } from '../../../../types/recipe'
 
 describe('scaleAndAggregate', () => {
   const mockRecipes: Recipe[] = [
@@ -38,12 +38,12 @@ describe('scaleAndAggregate', () => {
   ]
 
   it('scales and aggregates ingredients correctly', () => {
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 1.5 }, // 6 servings
-      { recipeId: 'recipe2', multiplier: 1 }    // 6 servings
-    ]
+    const multipliers = {
+      'recipe1': 1.5, // 6 servings
+      'recipe2': 1    // 6 servings
+    }
 
-    const result = scaleAndAggregate(mockRecipes, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers })
 
     // Check that ingredients are properly scaled and aggregated
     expect(result).toHaveLength(5) // 5 unique ingredients
@@ -72,16 +72,14 @@ describe('scaleAndAggregate', () => {
   })
 
   it('handles empty selection', () => {
-    const result = scaleAndAggregate(mockRecipes, [])
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers: {} })
     expect(result).toEqual([])
   })
 
   it('handles single recipe selection', () => {
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 2 }
-    ]
+    const multipliers = { 'recipe1': 2 }
 
-    const result = scaleAndAggregate(mockRecipes, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers })
 
     expect(result).toHaveLength(5)
     
@@ -90,31 +88,25 @@ describe('scaleAndAggregate', () => {
   })
 
   it('handles zero multiplier', () => {
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 0 }
-    ]
+    const multipliers = { 'recipe1': 0 }
 
-    const result = scaleAndAggregate(mockRecipes, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers })
     expect(result).toEqual([])
   })
 
   it('handles fractional multipliers', () => {
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 0.5 }
-    ]
+    const multipliers = { 'recipe1': 0.5 }
 
-    const result = scaleAndAggregate(mockRecipes, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers })
 
     const flour = result.find(item => item.name === 'flour')
     expect(flour?.qty).toBeCloseTo(0.5, 1) // 0.5 * 1 = 0.5 cups
   })
 
   it('handles ingredients without units', () => {
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 1 }
-    ]
+    const multipliers = { 'recipe1': 1 }
 
-    const result = scaleAndAggregate(mockRecipes, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: mockRecipes, multipliers })
 
     const eggs = result.find(item => item.name === 'eggs')
     expect(eggs).toBeDefined()
@@ -138,11 +130,9 @@ describe('scaleAndAggregate', () => {
       }
     ]
 
-    const selectedRecipes = [
-      { recipeId: 'recipe1', multiplier: 1 }
-    ]
+    const multipliers = { 'recipe1': 1 }
 
-    const result = scaleAndAggregate(recipesWithDuplicates, selectedRecipes)
+    const result = scaleAndAggregate({ recipes: recipesWithDuplicates, multipliers })
 
     // Should have two separate flour entries since units are different
     const flourEntries = result.filter(item => item.name === 'flour')

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeIngredient } from '../normalize'
-import type { Ingredient } from '../../../types/recipe'
+import { normalizeIngredient } from '../../../../lib/units/normalize'
+import type { Ingredient } from '../../../../types/recipe'
 
 describe('normalizeIngredient', () => {
   describe('name normalization', () => {
@@ -12,7 +12,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('flour')
+      expect(result.item).toBe('flour')
     })
 
     it('removes common descriptors and moves them to notes', () => {
@@ -23,7 +23,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('butter')
+      expect(result.item).toBe('butter')
       expect(result.note).toBe('softened')
     })
 
@@ -35,7 +35,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('eggs')
+      expect(result.item).toBe('eggs')
       expect(result.note).toBe('large, beaten')
     })
 
@@ -47,7 +47,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('extra virgin olive oil')
+      expect(result.item).toBe('extra virgin olive oil')
       expect(result.note).toBeUndefined()
     })
   })
@@ -131,7 +131,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('self-rising flour')
+      expect(result.item).toBe('self-rising flour')
     })
 
     it('handles ingredients with parentheses', () => {
@@ -142,7 +142,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('olive oil')
+      expect(result.item).toBe('olive oil')
       expect(result.note).toBe('extra virgin')
     })
 
@@ -154,7 +154,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('brown sugar')
+      expect(result.item).toBe('brown sugar')
       expect(result.note).toBe('packed')
     })
   })
@@ -168,7 +168,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('')
+      expect(result.item).toBe('')
     })
 
     it('handles ingredients with only descriptors', () => {
@@ -179,7 +179,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('')
+      expect(result.item).toBe('')
       expect(result.note).toBe('chopped')
     })
 
@@ -191,7 +191,7 @@ describe('normalizeIngredient', () => {
       }
       
       const result = normalizeIngredient(ingredient)
-      expect(result.name).toBe('flour')
+      expect(result.item).toBe('flour')
       expect(result.note).toBe('sifted')
     })
   })
